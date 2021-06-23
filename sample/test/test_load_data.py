@@ -49,15 +49,15 @@ def test_load_room(client):
 
 @pytest.mark.parametrize("message", EVENT_SAMPLES)
 def test_event_processing(client, message):
+    print(json.dumps(message))
     response = client.post("/event", data=json.dumps(message), content_type='application/json')
     assert response._status_code == 200
 
 
 def test_get_room(client):
-    request = client.get("/room", data=json.dumps(create_default_room_and_sensors()),
-                           content_type='application/json')
+    request = client.get("/room", data=json.dumps(create_default_room_and_sensors()), content_type='application/json')
+    data = request.json
+    assert request._status_code == 200
+    assert data.get("occupancy", None) is not None
 
-    print(request.__dict__)
-    print(request.json)
-    # assert response._status == "200 OK"
-    pytest.fail("Working on")
+    assert data.get("occupancy", None) is not None
